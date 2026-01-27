@@ -1,0 +1,172 @@
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #94a3b8;
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: #cbd5f5;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: #1f2937;
+  color: #e2e8f0;
+  text-transform: capitalize;
+}
+
+.pill.running {
+  background: #0f766e;
+}
+
+.card {
+  background: #111827;
+  border: 1px solid #1f2a44;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.kv {
+  display: grid;
+  gap: 12px;
+}
+
+.kv span {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.kv code {
+  display: block;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #e2e8f0;
+  word-break: break-all;
+}
+
+.hint {
+  margin-top: 12px;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.composer textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actions button {
+  min-width: 140px;
+}
+
+.actions .secondary {
+  background: transparent;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+.error {
+  margin-top: 12px;
+  color: #fca5a5;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message {
+  border: 1px solid #1f2a44;
+  border-radius: 12px;
+  padding: 12px;
+  background: #0f172a;
+}
+
+.message.user {
+  border-color: #3b82f6;
+}
+
+.message.assistant {
+  border-color: #22c55e;
+}
+
+.message-role {
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.message pre {
+  margin: 0;
+  white-space: pre-wrap;
+  color: #e2e8f0;
+}
+
+.empty {
+  color: #94a3b8;
+}
+
+@media (max-width: 720px) {
+  .app-header {
+    flex-direction: column;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
