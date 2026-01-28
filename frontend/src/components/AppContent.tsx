@@ -1,9 +1,6 @@
-import {
-    useCopilotAdditionalInstructions,
-    useCopilotReadable,
-    useFrontendTool,
-} from "@copilotkit/react-core";
+import { useFrontendTool } from "@copilotkit/react-core/v2";
 import { useState, type FormEventHandler } from "react";
+import { z } from "zod";
 
 type AppContentProps = {
     agUiUrl: string;
@@ -24,61 +21,53 @@ export function AppContent({
 }: AppContentProps) {
     const [background, setBackground] = useState<string>("--copilot-kit-background-color");
     const [tasks, setTasks] = useState<Array<{ id: string; text: string }>>([]);
-    const username = "Bob";
-    useCopilotReadable({
-        description: "Username",
-        value: username,
-    });
-    useCopilotAdditionalInstructions({
-        instructions: `The user's username is ${username}. Answer questions about the username using this value.`,
-    });
-    useCopilotReadable({
-        description: "Current background color",
-        value: background,
-    });
-    useCopilotReadable({
-        description: "Current todo list",
-        value: tasks.map((task) => task.text),
-    });
+    // useCopilotReadable({
+    //     description: "Username",
+    //     value: username,
+    // });
+    // useCopilotAdditionalInstructions({
+    //     instructions: `The user's username is ${username}. Answer questions about the username using this value.`,
+    // });
+    // useCopilotReadable({
+    //     description: "Current background color",
+    //     value: background,
+    // });
+    // useCopilotReadable({
+    //     description: "Current todo list",
+    //     value: tasks.map((task) => task.text),
+    // });
 
     useFrontendTool({
         name: "change_background",
         description:
           "Change the background color of the chat. Can be anything that the CSS background attribute accepts. Regular colors, linear of radial gradients etc.",
-        parameters: [
-          {
-            name: "background",
-            type: "string",
-            description: "The background. Prefer gradients. Only use when asked.",
-          },
-        ],
-        handler: ({ background }) => {
+        parameters: z.object({
+          background: z
+            .string()
+            .describe("The background color or gradient. Prefer gradients. Only use when asked."),
+        }),
+        handler: async ({ background }) => {
           setBackground(background);
-          return {
-            status: "success",
-            message: `Background changed to ${background}`,
-          };
+          return `Background changed to ${background}.`;
         },
       });
 
     useFrontendTool({
         name: "add_task",
         description: "Add a task to the todo list",
-        parameters: [
-          {
-            name: "task",
-            type: "string",
-            description: "The task to add. If multiple tasks, pass them as a newline-separated list.",
-            required: true,
-          },
-        ],
+        parameters: z.object({
+          task: z
+            .string()
+            .describe("The task to add. If multiple tasks, pass them as a newline-separated list.")
+            .optional(),
+        }),
         handler: async ({ task }) => {
             console.log("add_task", task);
-          const raw = Array.isArray(task) ? task : String(task).split(/\r?\n/);
+          const raw = String(task ?? "").split(/\r?\n/);
           const normalized = raw
             .map((entry) => entry.replace(/^[-*\d.\s]+/, "").trim())
             .filter(Boolean);
-          const entries = normalized.length ? normalized : [String(task).trim()].filter(Boolean);
+          const entries = normalized.length ? normalized : [String(task ?? "").trim()].filter(Boolean);
 
           const newTasks = entries.map((text) => ({ id: crypto.randomUUID(), text }));
           setTasks((prev) => [...prev, ...newTasks]);

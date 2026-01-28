@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { CopilotKit } from "@copilotkit/react-core";
-import { CopilotSidebar } from "@copilotkit/react-ui";
+import { CopilotSidebar, CopilotKitProvider } from "@copilotkit/react-core/v2";
 import { AppContent } from "./components/AppContent";
 import "./App.css";
 
@@ -34,33 +33,21 @@ function App() {
   );
 
   return (
-    <CopilotKit
+    <CopilotKitProvider 
       runtimeUrl={copilotRuntimeUrl}
-      agent="strands_agent"
-      showDevConsole
-      enableInspector
     >
       <CopilotSidebar
-        hitEscapeToClose
+        agentId="strands_agent"
         defaultOpen
         labels={{
-          title: "Copilot",
-          initial: "Ask the assistant while you test the AG-UI flow.",
+          modalHeaderTitle: "Copilot",
+          chatDisclaimerText: "Ask the assistant while you test the AG-UI flow.",
         }}
-        suggestions={[
-          {
-            title: "Change background",
-            message: "Change the background to something new.",
-          },
-          {
-            title: "Generate sonnet",
-            message: "Write a short sonnet about AI.",
-          },
-        ]}
       >
-        {appContent}
+        
       </CopilotSidebar>
-    </CopilotKit>
+      {appContent}
+    </CopilotKitProvider>
   );
 }
 

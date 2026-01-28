@@ -18,6 +18,12 @@ importers:
       '@copilotkit/runtime':
         specifier: ^1.51.2
         version: 1.51.2(@copilotkit/shared@1.51.2(@ag-ui/core@0.0.42))(@copilotkitnext/agent@1.51.2(@cfworker/json-schema@4.1.1)(hono@4.11.6))(@copilotkitnext/runtime@1.51.2(openai@4.104.0(zod@3.25.76)))(@langchain/core@0.3.80(@opentelemetry/api@1.9.0)(openai@4.104.0(zod@3.25.76)))(@langchain/langgraph-sdk@0.1.10(@langchain/core@0.3.80(@opentelemetry/api@1.9.0)(openai@4.104.0(zod@3.25.76))))(@opentelemetry/api@1.9.0)(openai@4.104.0(zod@3.25.76))
+      '@hono/node-server':
+        specifier: ^1.13.0
+        version: 1.19.9(hono@4.11.6)
+      hono:
+        specifier: ^4.11.6
+        version: 4.11.6
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
