@@ -3,11 +3,13 @@ import { serve } from "@hono/node-server";
 import { CopilotRuntime, createCopilotEndpoint } from "@copilotkit/runtime/v2";
 import { HttpAgent } from "@ag-ui/client";
 
-const strandsAgentUrl = process.env.STRANDS_AGENT_URL ?? "http://localhost:8000/";
+const assetsAgentUrl = process.env.STRANDS_AGENT_URL ?? "http://localhost:8000/assets";
+const taxonomyAgentUrl = process.env.STRANDS_AGENT_URL ?? "http://localhost:8000/taxonomy";
 
 const runtime = new CopilotRuntime({
   agents: {
-    strands_agent: new HttpAgent({ url: strandsAgentUrl }),
+    assets_agent: new HttpAgent({ url: assetsAgentUrl }),
+    taxonomy_agent: new HttpAgent({ url: taxonomyAgentUrl }),
   },
 });
 
