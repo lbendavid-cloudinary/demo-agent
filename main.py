@@ -1,3 +1,7 @@
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+
 from ag_ui_strands import StrandsAgent, StrandsAgentConfig, create_strands_app
 from fastapi import FastAPI
 from strands.models.ollama import OllamaModel

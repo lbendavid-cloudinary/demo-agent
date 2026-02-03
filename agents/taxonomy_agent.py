@@ -1,9 +1,8 @@
-from strands.models.ollama import OllamaModel
+from strands.models.bedrock import BedrockModel
 from strands import Agent, tool
 
-ollama_model = OllamaModel(
-    host="http://localhost:11434",  # Ollama server address
-    model_id="gpt-oss:20b",  # Specify which model to use
+bedrock_model = BedrockModel(
+    model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
 )
 
 
@@ -33,9 +32,9 @@ def add_task(task: str):
     return None
 
 
-# Create an agent using the Ollama model
+# Create an agent using the Bedrock model
 agent = Agent(
-    model=ollama_model,
+    model=bedrock_model,
     tools=[change_background, add_task],
     system_prompt="""
     You are a helpful assistant.

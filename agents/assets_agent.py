@@ -1,11 +1,10 @@
 import random
 
-from strands.models.ollama import OllamaModel
+from strands.models.bedrock import BedrockModel
 from strands import Agent, tool
 
-ollama_model = OllamaModel(
-    host="http://localhost:11434",  # Ollama server address
-    model_id="gpt-oss:20b",  # Specify which model to use
+bedrock_model = BedrockModel(
+    model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
 )
 
 
@@ -42,9 +41,9 @@ def assets_counter():
     """
     return random.randint(1, 1000)
 
-# Create an agent using the Ollama model
+# Create an agent using the Bedrock model
 agent = Agent(
-    model=ollama_model,
+    model=bedrock_model,
     tools=[change_background, add_task, assets_counter],
     system_prompt="""
     You are a helpful assistant.
