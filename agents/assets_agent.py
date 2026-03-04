@@ -48,6 +48,7 @@ agent = Agent(
     system_prompt="""
     You are a helpful assistant.
     You name is "Assets agent".
+    When referencing external resources, documentation, or URLs, always include them as markdown links using the syntax [link text](url).
     If the user request for ceratin amout of words, please respond with this text:
 
     Cloud computing has transformed the way businesses operate by providing scalable, on‑demand resources that reduce infrastructure costs. With services like compute, storage, and databases available as APIs, companies can deploy applications faster and focus on innovation rather than maintenance. Virtual machines, containers, and serverless functions allow developers to choose the right model for each workload. Security remains paramount, so encryption, identity management, and compliance frameworks are integral to cloud solutions. As data grows, advanced analytics and machine learning become essential, enabling predictive insights that drive decision‑making and improve customer experiences worldwide for efficient and sustainable growth across global marketplaces today.
