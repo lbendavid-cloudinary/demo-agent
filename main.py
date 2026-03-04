@@ -1,60 +1,49 @@
-from ag_ui_strands import StrandsAgent, create_strands_app
-from strands import Agent, tool
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+
+from ag_ui_strands import StrandsAgent, StrandsAgentConfig, create_strands_app
+from fastapi import FastAPI
 from strands.models.ollama import OllamaModel
 
-# Create an Ollama model instance
-ollama_model = OllamaModel(
-    host="http://localhost:11434",  # Ollama server address
-    model_id="gpt-oss:20b",  # Specify which model to use
-)
+from agents.assets_agent import agent as assets_agent
+from agents.taxonomy_agent import agent as taxonomy_agent
 
 
-# Define frontend tool - registered so LLM knows about it, but returns None
-# The actual execution happens on the frontend
-@tool
-def change_background(background: str):
-    """
-    Change the background color of the chat. Can be anything that the CSS background
-    attribute accepts. Regular colors, linear or radial gradients etc.
+def build_context_message(input_data, user_message: str) -> str:
+    if not getattr(input_data, "context", None):
+        return user_message
 
-    Args:
-        background: The background color or gradient. Prefer gradients. Only use when asked.
-    """
-    # Return None - frontend will handle the actual execution
-    return None
+    context_lines: list[str] = []
+    for ctx in input_data.context:
+        description = getattr(ctx, "description", None) or "Context"
+        value = getattr(ctx, "value", "")
+        if value:
+            context_lines.append(f"- {description}: {value}")
 
+    if not context_lines:
+        return user_message
 
-@tool
-def add_task(task: str):
-    """
-    Add a task to the todo list
-
-    Args:
-        task: The task to add
-    """
-    return None
-
-
-# Create an agent using the Ollama model
-agent = Agent(
-    model=ollama_model,
-    tools=[change_background, add_task],
-    system_prompt="""
-    You are a helpful assistant.
-    When the user greets you, always greet them back. Your greeting should always start with "Hello".
-    Your greeting should also always ask (exact wording) "how can I assist you?"
-    """,
-)
-
+    context_block = "Context:\n" + "\n".join(context_lines)
+    return f"{context_block}\n\nUser message:\n{user_message}"
 
 # Wrap with AG-UI integration
-agui_agent = StrandsAgent(
-    agent=agent,
-    name="strands_agent",
+agui_assets_agent = StrandsAgent(
+    agent=assets_agent,
+    name="assets_agent",
+    config=StrandsAgentConfig(state_context_builder=build_context_message),
+)
+
+agui_taxonomy_agent = StrandsAgent(
+    agent=taxonomy_agent,
+    name="taxonomy_agent",
+    config=StrandsAgentConfig(state_context_builder=build_context_message),
 )
 
 # Create the FastAPI app
-app = create_strands_app(agui_agent, "/")
+app = FastAPI()
+app.mount("/assets", create_strands_app(agui_assets_agent, "/"))
+app.mount("/taxonomy", create_strands_app(agui_taxonomy_agent, "/"))
 
 if __name__ == "__main__":
     import uvicorn

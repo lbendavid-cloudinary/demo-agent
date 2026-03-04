@@ -1,51 +1,28 @@
-import http from "node:http";
-import { CopilotRuntime, copilotRuntimeNodeHttpEndpoint, ExperimentalEmptyAdapter } from "@copilotkit/runtime";
+import { Hono } from "hono";
+import { serve } from "@hono/node-server";
+import { CopilotRuntime, createCopilotEndpoint } from "@copilotkit/runtime/v2";
 import { HttpAgent } from "@ag-ui/client";
 
-const strandsAgentUrl = process.env.STRANDS_AGENT_URL ?? "http://localhost:8000/";
-const serviceAdapter = new ExperimentalEmptyAdapter();
+const assetsAgentUrl = process.env.STRANDS_AGENT_URL ?? "http://localhost:8000/assets";
+const taxonomyAgentUrl = process.env.STRANDS_AGENT_URL ?? "http://localhost:8000/taxonomy";
 
 const runtime = new CopilotRuntime({
   agents: {
-    strands_agent: new HttpAgent({ url: strandsAgentUrl }),
+    assets_agent: new HttpAgent({ url: assetsAgentUrl }),
+    taxonomy_agent: new HttpAgent({ url: taxonomyAgentUrl }),
   },
 });
 
-const runtimeHandler = copilotRuntimeNodeHttpEndpoint({
+const copilotApp = createCopilotEndpoint({
   runtime,
-  serviceAdapter,
-  endpoint: "/api/copilotkit",
+  basePath: "/api/copilotkit",
 });
 
 const port = Number(process.env.PORT ?? 8001);
-const corsOrigin = process.env.CORS_ORIGIN ?? "*";
+const app = new Hono();
+app.route("/", copilotApp);
+app.get("/health", (c) => c.json({ status: "ok" }));
 
-const server = http.createServer(async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", corsOrigin);
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    res.end();
-    return;
-  }
-
-  if (req.url?.startsWith("/api/copilotkit")) {
-    await runtimeHandler(req, res);
-    return;
-  }
-
-  if (req.url === "/health") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ status: "ok" }));
-    return;
-  }
-
-  res.statusCode = 404;
-  res.end("Not found");
-});
-
-server.listen(port, () => {
+serve({ fetch: app.fetch, port }, () => {
   console.log(`CopilotKit runtime listening on http://localhost:${port}/api/copilotkit`);
 });
